@@ -1,88 +1,95 @@
-# BAS3NJI WORLD — Luxury Streetwear Brand Site
+# Migrate to React + Vite + Plain CSS
 
-Rebuild the current app as a black / white / deep-red luxury streetwear brand site with a lookbook, featured collections, and WhatsApp-based ordering. Keep the existing Supabase auth wiring so users can log in.
+Rebuild the site on a vanilla Vite + React 18 SPA. Remove TanStack Start, TanStack Router, TanStack Query, Tailwind, and the Cloudflare/SSR wrapper. Keep every visual and every page identical — Hero, Featured Collection, Brand Story, Lookbook, Featured Products, Instagram, Collections, Lookbook page, About, Contact, Login, Account. Keep Supabase auth (client-side only).
 
-## Brand system
+## New stack
 
-- **Colors**: Black `#000000`, White `#FFFFFF`, Accent Red `#B11226`. Red used only for active nav, CTAs, hover, links, badges, small accents.
-- **Typography**: Bold luxury sans (display: a heavy modern sans e.g. `Archivo Black` / `Anton` pairing; body: `Inter` for cleanliness). Wide letter-spacing on headings and logo.
-- **Logo**: Custom text mark `BAS3NJI` — clean bold sans, generous tracking, the `J` tilted ~10° to the right. Rendered inline as SVG so it scales everywhere. White on dark, black on light.
-- **Favicon**: The tilted `J` alone as an SVG favicon (black mark on transparent + white version for dark UA).
-- **Feel**: Editorial magazine layout, fullscreen sections, cinematic scroll, minimal chrome, premium micro-interactions (Framer Motion).
+- **Build:** Vite 5 + `@vitejs/plugin-react` (SPA, no SSR)
+- **Routing:** `react-router-dom` v6 (`BrowserRouter`)
+- **Styling:** Plain CSS only. One global `src/styles/global.css` for tokens/reset/typography, plus one co-located `Component.css` per component/page. No Tailwind, no `@apply`, no utility classes.
+- **Animation:** keep `framer-motion` (it's just a React lib, not framework-specific)
+- **Auth:** existing `@supabase/supabase-js` client, called directly from React (no server functions, no auth middleware)
+- **Icons:** keep `lucide-react`
 
-## Pages / routes
+## What gets deleted
 
-Top-level public routes (replace expense app routes):
+- `@tanstack/*` packages, `@lovable.dev/vite-tanstack-config`, `@cloudflare/vite-plugin`, `wrangler`, `tailwindcss`, `@tailwindcss/vite`
+- `src/routes/`, `src/routeTree.gen.ts`, `src/router.tsx`, `src/start.ts`, `src/server.ts`, `wrangler.jsonc`
+- `src/integrations/supabase/{auth-attacher,auth-middleware,client.server}.ts` (server-only pieces)
+- `src/lib/error-capture.ts`, `src/lib/error-page.ts`
+- `src/styles.css` (Tailwind entry) → replaced by `src/styles/global.css`
+- `components.json`, shadcn config (unused after migration)
 
-- `/` — Home
-  - Fullscreen hero (huge BAS3NJI wordmark, tilted J, background video/photo slot, red CTA "Shop the Drop" → jumps to collection)
-  - 3D animated mark (lightweight — CSS/Framer 3D transform on the J, no Three.js) — subtle rotate/parallax on scroll
-  - Featured collection strip
-  - Brand story preview (short editorial block + link to `/about`)
-  - Lookbook preview grid (link to `/lookbook`)
-  - Featured products (3–6 cards, WhatsApp CTA per item)
-  - Instagram preview grid (static tiles for now, easy to swap for real feed later)
-  - Newsletter / CTA band
-- `/collections` — All collections (editorial index)
-- `/lookbook` — Fullscreen editorial gallery
-- `/about` — Brand story, values, imagery
-- `/contact` — Contact + socials + WhatsApp
-- `/login` — Supabase email/password + Google login (keep existing auth); on success → `/account`
-- `/account` — Simple protected page: user email, sign out. Foundation for future orders/wishlist.
+## What gets created
 
-Remove all expense-app routes and components (`/expenses`, `/reports`, `/trips`, `/admin/*`, `/finance/*`, `/approvals`, `/dashboard`, `/ask-ai`, `/policies`, `/profile`, `SubTabs`, `DarkVeil`, expense server fns, etc.).
+```
+index.html
+src/
+  main.tsx              # ReactDOM.createRoot + <BrowserRouter>
+  App.tsx               # <Routes>: /, /collections, /lookbook, /about, /contact, /login, /account
+  styles/
+    global.css          # :root tokens (--color-blood, --font-display), reset, typography, utilities
+    fonts.css           # Archivo Black + Inter via @fontsource
+  components/
+    Nav.tsx  + Nav.css
+    Footer.tsx + Footer.css
+    Logo.tsx + Logo.css
+    ProductCard.tsx + ProductCard.css
+    TiltedJ3D.tsx + TiltedJ3D.css
+    ProtectedRoute.tsx  # redirects to /login if no session
+  pages/
+    Home.tsx + Home.css
+    Collections.tsx + Collections.css
+    Lookbook.tsx + Lookbook.css
+    About.tsx + About.css
+    Contact.tsx + Contact.css
+    Login.tsx + Login.css
+    Account.tsx + Account.css
+  hooks/use-auth.ts      # thin wrapper around supabase.auth.onAuthStateChange
+  lib/whatsapp.ts        # unchanged
+  integrations/supabase/client.ts   # unchanged (client-side publishable key)
+vite.config.ts           # plain @vitejs/plugin-react + path alias @
+tsconfig.json            # keep strict TS, drop TanStack refs
+```
 
-## WhatsApp checkout
+## Styling conventions (plain CSS)
 
-- Single env constant `VITE_WHATSAPP_NUMBER` (I'll add via `add_secret` if user wants it configurable, else hardcode a placeholder they can change).
-- Every product card + CTA opens `https://wa.me/{number}?text=<url-encoded pre-filled message>` in a new tab, message includes product name, size selection, and price.
-- No cart, no Stripe — pure WhatsApp funnel per user's ask.
+- Design tokens on `:root` in `global.css`:
+  ```css
+  :root {
+    --color-bg: #000;
+    --color-fg: #fff;
+    --color-blood: #B11226;
+    --font-display: "Archivo Black", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --tracking-luxe: 0.3em;
+    --tracking-brand: 0.05em;
+  }
+  ```
+- Every component imports its own `.css` file. Class names are namespaced: `.nav`, `.nav__link`, `.nav__link--active` (BEM). No global class collisions.
+- Responsive via CSS media queries inside each component's CSS.
+- Head metadata set via a small `useDocumentHead(title, description)` hook (updates `document.title` and og tags on route change) — no `react-helmet` dependency.
 
-## Login → Supabase
+## Auth flow
 
-- Keep `src/integrations/supabase/client.ts` and auth-attacher — do not touch.
-- Simplify `/login` to a luxury-styled email/password + Google button page.
-- Successful login navigates to `/account`.
-- `/account` is under a slim `_authenticated` layout (the existing one is preserved but its children are deleted; add only `_authenticated/account.tsx`).
+- `useAuth()` subscribes to `supabase.auth.onAuthStateChange` and exposes `{ user, loading, signIn, signUp, signInWithGoogle, signOut }`.
+- `/login` calls `supabase.auth.signInWithPassword` / `signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/account' } })`.
+- `/account` wrapped in `<ProtectedRoute>` — if `!user && !loading` → `<Navigate to="/login" replace />`.
+- SPA-safe: `public/_redirects` with `/* /index.html 200` so deep links work on Lovable hosting.
 
-## Components
+## Config
 
-- `<Logo />` — SVG wordmark with tilted J, size + color props.
-- `<Nav />` — fixed top, minimal (logo left, links right, red dot on active). Mobile: fullscreen overlay menu.
-- `<Hero />`, `<FeaturedCollection />`, `<BrandStory />`, `<LookbookPreview />`, `<FeaturedProducts />`, `<InstagramPreview />`, `<Footer />`.
-- `<ProductCard />` with WhatsApp CTA.
-- `<TiltedJ3D />` — animated 3D-feeling J using CSS transforms + Framer Motion (parallax on scroll, subtle rotate on hover).
+- `vite.config.ts`: `defineConfig({ plugins: [react()], resolve: { alias: { '@': '/src' } }, server: { host: '::', port: 8080 } })`
+- `index.html`: `<title>BAS3NJI WORLD — Luxury Streetwear</title>`, meta description, og tags, favicon, manifest link, `<div id="root">`, `<script type="module" src="/src/main.tsx">`.
 
-## Assets
+## Verification
 
-- Generate a handful of high-fashion editorial placeholder images (streetwear model shots, product flats, lookbook stills) with `imagegen` (standard quality) — moody, high-contrast, black/white/red aesthetic. Upload via `lovable-assets`.
-- Generate custom favicon SVG (tilted J).
+After the migration I'll run the dev server, screenshot `/`, `/lookbook`, `/login` in headless Chromium, and confirm the build passes and Supabase login still works end-to-end.
 
-## Metadata / SEO
+## Trade-offs (surfaced up-front)
 
-- Update `__root.tsx` head: title "BAS3NJI WORLD — Luxury Streetwear", matching description, OG image = hero shot, theme-color `#000000`.
-- Replace PWA manifest name/icons.
+- **No SSR** → slower first paint, weaker SEO for crawlers that don't run JS (Google is fine, most others aren't). Every page is client-rendered.
+- **No server functions** → any future feature needing secrets (Stripe, admin operations) will have to be added back via Supabase Edge Functions or a separate backend.
+- **Bigger initial JS bundle** → no route-level code splitting out of the box (I'll add `React.lazy` per page to compensate).
 
-## Cleanup
-
-- Delete unused expense routes + `src/lib/*expenses*`, `*reports*`, `*policy*`, `xlsx-export`, admin fns, DarkVeil, SubTabs, PhoneInput, DepartmentSelect, InstallHint.
-- Keep: supabase integration, `_authenticated` layout shell, `use-auth`, `cn`, sonner Toaster.
-- Do NOT touch the database — existing tables can stay unused for now (future: `products`, `collections` when the user is ready).
-
-## Technical notes
-
-- All motion via `framer-motion` (already installed).
-- All routing via TanStack Start file-based routes in `src/routes/`.
-- Styling in `src/styles.css` — swap emerald tokens to red, background to pure black, foreground white.
-- No Three.js — 3D feel comes from layered SVG + CSS `transform: perspective()` + scroll-linked motion.
-- WhatsApp number: I'll ship with a placeholder `+1 555 000 0000` and ask the user to provide the real one after — no secret needed since the number is public.
-
-## Deliverable order
-
-1. Update design tokens + fonts + head metadata + favicon
-2. Build `<Logo />`, `<Nav />`, `<Footer />`
-3. Home page with all sections + generated imagery
-4. Collections, Lookbook, About, Contact
-5. Login + Account
-6. Delete old expense code
-7. Verify build + screenshot the home page
+Reply "approve" to proceed, or tell me what to change.
