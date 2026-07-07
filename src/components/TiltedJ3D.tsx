@@ -1,11 +1,7 @@
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { useRef } from "react";
 
-/**
- * The signature tilted J — rendered massive, floats behind hero content,
- * parallaxes on scroll, tracks cursor for a 3D feel. No Three.js.
- */
-export function TiltedJ3D({ className = "" }: { className?: string }) {
+export function TiltedJ3D() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], [0, -120]);
@@ -32,40 +28,13 @@ export function TiltedJ3D({ className = "" }: { className?: string }) {
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      style={{ y, scale, perspective: 1200 }}
-      className={`pointer-events-auto absolute inset-0 flex items-center justify-center ${className}`}
+      style={{ y, scale }}
+      className="tj3d"
     >
-      <motion.div
-        style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d" }}
-        className="relative select-none"
-      >
-        {/* Blood shadow layer */}
-        <span
-          aria-hidden
-          className="font-display absolute inset-0 flex items-center justify-center text-[38vw] leading-none text-blood/25 blur-2xl"
-          style={{ transform: "rotate(10deg) translate(0.06em, 0.06em) translateZ(-40px)" }}
-        >
-          J
-        </span>
-        {/* Outline layer */}
-        <span
-          aria-hidden
-          className="font-display absolute inset-0 flex items-center justify-center text-[38vw] leading-none"
-          style={{
-            WebkitTextStroke: "1px rgba(255,255,255,0.08)",
-            color: "transparent",
-            transform: "rotate(10deg) translate(-0.02em, -0.02em) translateZ(20px)",
-          }}
-        >
-          J
-        </span>
-        {/* Solid front layer */}
-        <span
-          className="font-display relative flex items-center justify-center text-[38vw] leading-none text-white/95"
-          style={{ transform: "rotate(10deg)", textShadow: "0 40px 80px rgba(0,0,0,0.6)" }}
-        >
-          J
-        </span>
+      <motion.div style={{ rotateX: srx, rotateY: sry }} className="tj3d__stack">
+        <span aria-hidden className="tj3d__layer tj3d__shadow">J</span>
+        <span aria-hidden className="tj3d__layer tj3d__outline">J</span>
+        <span className="tj3d__layer tj3d__front">J</span>
       </motion.div>
     </motion.div>
   );
