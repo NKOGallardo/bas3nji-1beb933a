@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
+import { getDemoSession, isDemoAuthEnabled } from "@/lib/demo-auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -16,6 +17,27 @@ export function useAuth() {
       setUser(nextSession?.user ?? null);
       setLoading(false);
     };
+
+    if (isDemoAuthEnabled()) {
+      const demoSession = getDemoSession();
+      if (demoSession) {
+        const demoUser = demoSession.user as unknown as User;
+        applySession({
+          user: demoUser,
+          access_token: demoSession.access_token,
+          refresh_token: demoSession.refresh_token,
+          expires_at: demoSession.expires_at,
+          token_type: "bearer",
+          user_role: "authenticated",
+          expires_in: 3600,
+          provider_token: null,
+          provider_refresh_token: null,
+        } as Session);
+      } else {
+        applySession(null);
+      }
+      return;
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       applySession(s);

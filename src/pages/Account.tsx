@@ -7,6 +7,7 @@ import { whatsappGeneralUrl } from "@/lib/whatsapp";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { useDocumentHead } from "@/hooks/use-document-head";
+import { signOutDemoAccount, isDemoAuthEnabled } from "@/lib/demo-auth";
 
 export default function Account() {
   useDocumentHead({ title: "Account — BAS3NJI WORLD", description: "Your BAS3NJI WORLD account." });
@@ -14,6 +15,13 @@ export default function Account() {
   const navigate = useNavigate();
 
   const signOut = async () => {
+    if (isDemoAuthEnabled()) {
+      signOutDemoAccount();
+      toast.success("Signed out");
+      navigate("/login", { replace: true });
+      return;
+    }
+
     await supabase.auth.signOut();
     toast.success("Signed out");
     navigate("/login", { replace: true });

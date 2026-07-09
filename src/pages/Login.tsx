@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Logo } from "@/components/Logo";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useDocumentHead } from "@/hooks/use-document-head";
-import hero from "@/assets/hero.jpg";
+import hero from "@/assets/pic4.jpg";
+import { createDemoAccount, isDemoAuthEnabled, signInDemoAccount } from "@/lib/demo-auth";
 
 export default function Login() {
   useDocumentHead({ title: "Sign in — BAS3NJI WORLD", description: "Sign in to your BAS3NJI WORLD account." });
@@ -22,24 +23,62 @@ export default function Login() {
     if (ready && user) navigate("/account", { replace: true });
   }, [ready, user, navigate]);
 
+  const getAuthErrorMessage = (err: unknown) => {
+    if (err instanceof Error) {
+      const message = err.message.toLowerCase();
+      if (message.includes("email not confirmed")) {
+        return "Please confirm your email before signing in. Check your inbox for the confirmation link.";
+      }
+      if (message.includes("invalid login credentials")) {
+        return "That email/password combination is not valid. Please try again or create an account.";
+      }
+      return err.message;
+    }
+
+    return "Something went wrong";
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      if (isDemoAuthEnabled()) {
+        if (mode === "signin") {
+          signInDemoAccount(email, password);
+          toast.success("Welcome back");
+          navigate("/account", { replace: true });
+          return;
+        }
+
+        createDemoAccount(email, password);
+        toast.success("Account created — you’re signed in");
+        navigate("/account", { replace: true });
+        return;
+      }
+
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back");
       } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: window.location.origin },
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}/account` },
         });
+
         if (error) throw error;
-        toast.success("Check your email to confirm");
+
+        if (data.session) {
+          toast.success("Account created — you’re signed in");
+          navigate("/account", { replace: true });
+          return;
+        }
+
+        toast.success("Account created. Please check your email to confirm your address.");
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
