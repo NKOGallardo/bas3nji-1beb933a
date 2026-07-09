@@ -149,7 +149,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="field__input"
-                placeholder="••••••••"
+                placeholder="••••••••(AKA password)"
                 autoComplete={mode === "signin" ? "current-password" : "new-password"}
               />
             </label>

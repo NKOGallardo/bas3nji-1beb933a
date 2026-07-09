@@ -9,14 +9,14 @@ import { ProductCard, type Product } from "@/components/ProductCard";
 import { whatsappGeneralUrl, whatsappOrderUrl } from "@/lib/whatsapp";
 import { useDocumentHead } from "@/hooks/use-document-head";
 
-import hero from "@/assets/hero.jpg";
-import look1 from "@/assets/look-1.jpg";
-import look2 from "@/assets/look-2.jpg";
-import look3 from "@/assets/look-3.jpg";
-import prod1 from "@/assets/product-1.jpg";
-import prod2 from "@/assets/product-2.jpg";
-import prod3 from "@/assets/product-3.jpg";
-import story from "@/assets/story.jpg";
+import hero from "@/assets/pic3.jpg";
+import look1 from "@/assets/pic10.jpg";
+import look2 from "@/assets/pic12.jpg";
+import look3 from "@/assets/pic11.jpg";
+import prod1 from "@/assets/pic9.jpg";
+import prod2 from "@/assets/pic8.jpg";
+import prod3 from "@/assets/pic6.jpg";
+import story from "@/assets/pic7.jpg";
 
 const FEATURED: Product[] = [
   { id: "p1", name: "Signature Tee — Blood Mark", price: "$120", category: "Essentials", image: prod1 },
