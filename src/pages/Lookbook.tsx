@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { useDocumentHead } from "@/hooks/use-document-head";
-import hero from "@/assets/hero.jpg";
-import look1 from "@/assets/look-1.jpg";
-import look2 from "@/assets/look-2.jpg";
-import look3 from "@/assets/look-3.jpg";
-import story from "@/assets/story.jpg";
+import hero from "@/assets/pic8.jpg";
+import look1 from "@/assets/pic9.jpg";
+import look2 from "@/assets/pic10.jpg";
+import look3 from "@/assets/pic11.jpg";
+import story from "@/assets/pic12.jpg";
 
 const SHOTS = [
   { src: hero, cls: "lb-1", title: "The Hood", num: "01" },
