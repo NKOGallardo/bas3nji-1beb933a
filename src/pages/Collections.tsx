@@ -5,10 +5,10 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { whatsappGeneralUrl } from "@/lib/whatsapp";
 import { useDocumentHead } from "@/hooks/use-document-head";
-import look1 from "@/assets/look-1.jpg";
-import look2 from "@/assets/look-2.jpg";
-import look3 from "@/assets/look-3.jpg";
-import hero from "@/assets/hero.jpg";
+import look1 from "@/assets/pic3.jpg";
+import look2 from "@/assets/pic6.jpg";
+import look3 from "@/assets/pic7.jpg";
+import hero from "@/assets/pic4.jpg";
 
 const COLLECTIONS = [
   { id: "noir", name: "Noir — Vol. 01", season: "AW26", pieces: 12, image: hero, active: true },
