@@ -3,8 +3,8 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
 import { useDocumentHead } from "@/hooks/use-document-head";
-import story from "@/assets/story.jpg";
-import look3 from "@/assets/look-3.jpg";
+import story from "@/assets/MVP.jpg";
+import look3 from "@/assets/pic10.jpg";
 
 export default function About() {
   useDocumentHead({
@@ -48,7 +48,7 @@ export default function About() {
           ].map((v, i) => (
             <motion.div
               key={v.n}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.6 }}

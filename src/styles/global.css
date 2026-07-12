@@ -276,7 +276,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { width: 
 }
 .tj3d__shadow { position: absolute; inset: 0; color: rgba(177,18,38,0.25); filter: blur(24px); transform: rotate(10deg) translate(0.06em, 0.06em) translateZ(-40px); }
 .tj3d__outline { position: absolute; inset: 0; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.08); transform: rotate(10deg) translate(-0.02em, -0.02em) translateZ(20px); }
-.tj3d__front { position: relative; color: rgba(255,255,255,0.95); transform: rotate(10deg); text-shadow: 0 40px 80px rgba(0,0,0,0.6); }
+.tj3d__front { position: relative; color: rgba(137, 137, 137, 0.95); transform: rotate(10deg); text-shadow: 0 40px 80px rgba(0,0,0,0.6); }
 
 /* ============================================================
    HERO (home)
