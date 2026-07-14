@@ -29,7 +29,7 @@ export function Footer() {
 
           <FooterCol title="Follow">
             <li>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+              <a href="https://www.instagram.com/bas3njiworld?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
                 <Instagram className="icon-sm" /> Instagram
               </a>
             </li>
