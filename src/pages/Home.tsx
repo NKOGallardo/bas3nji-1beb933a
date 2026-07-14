@@ -225,15 +225,15 @@ function InstagramPreview() {
         <div className="ig__head">
           <div>
             <div className="eyebrow">On the feed</div>
-            <h2 className="fc__title" style={{ fontSize: "clamp(1.875rem, 5vw, 3rem)" }}>@bas3nji.world</h2>
+            <h2 className="fc__title" style={{ fontSize: "clamp(1.875rem, 5vw, 3rem)" }}>@bas3njiworld</h2>
           </div>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="btn btn--outline" style={{ padding: "0.625rem 1.25rem" }}>
+          <a href="https://www.instagram.com/bas3njiworld?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="btn btn--outline" style={{ padding: "0.625rem 1.25rem" }}>
             <Instagram className="icon" /> Follow
           </a>
         </div>
         <div className="ig__grid">
           {tiles.map((src, i) => (
-            <a key={i} href="https://instagram.com" target="_blank" rel="noreferrer" className="ig__tile">
+            <a key={i} href="https://www.instagram.com/bas3njiworld?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="ig__tile">
               <img src={src} alt="" loading="lazy" />
               <div className="ig__tile-fill" />
               <Instagram className="ig__tile-icon" />

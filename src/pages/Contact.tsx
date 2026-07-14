@@ -38,11 +38,11 @@ export default function Contact() {
             <div className="contact-card__body">hello@bas3nji.world</div>
             <ArrowUpRight className="contact-card__arrow" />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="contact-card">
+          <a href="https://www.instagram.com/bas3njiworld?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="contact-card">
             <Instagram className="contact-card__icon" />
             <div className="contact-card__eyebrow">Follow</div>
             <div className="contact-card__title">Instagram</div>
-            <div className="contact-card__body">@bas3nji.world</div>
+            <div className="contact-card__body">@bas3njiworld</div>
             <ArrowUpRight className="contact-card__arrow" />
           </a>
         </div>
