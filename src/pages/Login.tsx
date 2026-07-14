@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { lovable } from "@/integrations/lovable";
 import { Logo } from "@/components/Logo";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useDocumentHead } from "@/hooks/use-document-head";
@@ -87,12 +86,11 @@ export default function Login() {
 
   const google = async () => {
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/account` },
       });
-      if (result.error) throw result.error;
-      if (result.redirected) return;
-      navigate("/account", { replace: true });
+      if (error) throw error;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
     }
